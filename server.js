@@ -2,9 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
+const fs = require("fs");
 require("dotenv").config();
 // import routes
-const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -14,7 +14,9 @@ app.use(express.json({ limit: "2mb" }));
 app.use(cors());
 
 // Routes
-app.use("/api", authRoutes);
+fs.readdirSync("./routes").map((r) =>
+  app.use("/api", require("./routes/" + r))
+);
 
 // db
 mongoose
