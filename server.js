@@ -1,3 +1,4 @@
+// @ts-nocheck
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
@@ -20,7 +21,7 @@ fs.readdirSync("./routes").map((r) =>
 
 // db
 mongoose
-  .connect(process.env.ENV_DATABASE || "")
+  .connect(process.env.ENV_DATABASE)
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB CONNECTION ERR", err));
 
