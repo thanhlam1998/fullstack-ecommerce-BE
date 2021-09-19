@@ -1,4 +1,4 @@
-const Category = require("../models/category");
+const Sub = require("../models/sub");
 const slugify = require("slugify");
 
 /**
@@ -8,47 +8,47 @@ const slugify = require("slugify");
 
 exports.create = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, parent } = req.body;
     // @ts-ignore
-    res.json(await new Category({ name, slug: slugify(name) }).save());
+    res.json(await new Sub({ name, parent, slug: slugify(name) }).save());
   } catch (error) {
-    res.status(400).send("Category create failed");
+    res.status(400).send("Sub create failed");
   }
 };
 
 // @ts-ignore
 exports.list = async (req, res) => {
-  res.json(await Category.find({}).sort({ createdAt: -1 }).exec());
+  res.json(await Sub.find({}).sort({ createdAt: -1 }).exec());
 };
 
 exports.read = async (req, res) => {
-  const category = await Category.findOne({ slug: req.params.slug }).exec();
+  const category = await Sub.findOne({ slug: req.params.slug }).exec();
   res.json(category);
 };
 
 exports.update = async (req, res) => {
-  const { name } = req.body;
+  const { name, parent } = req.body;
   try {
     // @ts-ignore
-    const updated = await Category.findOneAndUpdate(
+    const updated = await Sub.findOneAndUpdate(
       { slug: req.params.slug },
       // @ts-ignore
-      { name, slug: slugify(name) },
+      { name, parent, slug: slugify(name) },
       { new: true }
     );
     res.json(updated);
   } catch (error) {
-    res.status(400).send("Category update failed");
+    res.status(400).send("Sub update failed");
   }
 };
 
 exports.remove = async (req, res) => {
   try {
-    const deleted = await Category.findOneAndDelete({
+    const deleted = await Sub.findOneAndDelete({
       slug: req.params.slug,
     }).exec();
     res.json(deleted);
   } catch (error) {
-    res.status(400).send("Category delete failed");
+    res.status(400).send("Sub delete failed");
   }
 };
