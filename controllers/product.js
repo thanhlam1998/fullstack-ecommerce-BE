@@ -93,7 +93,7 @@ exports.list = async (req, res) => {
 
     res.json(products);
   } catch (err) {
-    console.log(err);
+    return res.status(400).json({ err: err.message });
   }
 };
 
@@ -104,9 +104,7 @@ exports.productsCount = async (req, res) => {
 
 exports.productStar = async (req, res) => {
   const product = await Product.findById(req.params.productId).exec();
-  console.log(req.user.email);
   const user = await User.findOne({ email: req.user.email }).exec();
-  console.log(user);
   const { star } = req.body;
 
   // Check if currently logged in user have already rating to this product
@@ -139,4 +137,18 @@ exports.productStar = async (req, res) => {
     ).exec();
     res.json(ratingUpdated);
   }
+};
+
+exports.listRelated = async (req, res) => {
+  const product = await Product.findById(req.params.productId).exec();
+
+  const related = await Product.find({
+    _id: { $ne: product._id },
+    category: product.category,
+  })
+    .limit(3)
+    .populate("category")
+    .populate("subs")
+    .exec();
+  res.json(related);
 };
