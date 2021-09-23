@@ -152,3 +152,61 @@ exports.listRelated = async (req, res) => {
     .exec();
   res.json(related);
 };
+
+// SEARCH / FILTER
+
+const handleQuery = async (req, res, query) => {
+  const products = await Product.find({ $text: { $search: query } })
+    .populate("category", "_id name")
+    .populate("subs", "_id name")
+    .populate("ratings", "star")
+    .exec();
+  res.json(products);
+};
+
+const handlePrice = async (req, res, price) => {
+  try {
+    const products = await Product.find({
+      price: {
+        $gte: price[0],
+        $lte: price[1],
+      },
+    })
+      .populate("category", "_id name")
+      .populate("subs", "_id name")
+      .populate("ratings", "star")
+      .exec();
+    res.json(products);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleCategory = async (req, res, category) => {
+  try {
+    const products = await Product.find({ category })
+      .populate("category", "_id name")
+      .populate("subs", "_id name")
+      .populate("ratings", "star")
+      .exec();
+    res.json(products);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.searchFilters = async (req, res) => {
+  const { query, price, category } = req.body;
+
+  if (query) {
+    await handleQuery(req, res, query);
+  }
+  // price [20-1000]
+  if (price !== undefined) {
+    await handlePrice(req, res, price);
+  }
+
+  if (category) {
+    handleCategory(req, res, category);
+  }
+};
