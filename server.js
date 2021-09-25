@@ -9,7 +9,7 @@ require("dotenv").config();
 
 const app = express();
 
-// middlewares
+// middleware
 app.use(morgan("dev"));
 app.use(express.json({ limit: "2mb" }));
 app.use(cors());
