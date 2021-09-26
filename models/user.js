@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
       default: [],
     },
     address: String,
-    // wishList: [{ type: ObjectId, ref: "Product" }],
+    wishList: [{ type: ObjectId, ref: "Product" }],
   },
   { timestamps: true }
 );
